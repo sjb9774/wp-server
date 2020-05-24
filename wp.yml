@@ -1,0 +1,31 @@
+- hosts: app
+  name: Setup access and basic tools
+  gather_facts: no
+  become: yes
+  vars_files:
+    - ./vars/access.yml
+  remote_user: "{{ access_user }}"
+  tags:
+    - access
+  roles:
+    - sjb9774.access
+    - sjb9774.epel
+    - sjb9774.wget
+
+- hosts: app
+  name: setup WordPress
+  gather_facts: yes
+  remote_user: "{{ access_user }}"
+  vars_files:
+    - ./vars/wp_config.yml
+  tags:
+      - site
+  roles:
+    - role: sjb9774.mysql
+      tags:
+        - mysql
+    - sjb9774.php
+    - sjb9774.httpd
+    - role: sjb9774.wordpress
+      tags:
+        - wordpress

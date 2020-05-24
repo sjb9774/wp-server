@@ -1,0 +1,5 @@
+files/ssh
+inventory/prod.yml
+inventory/stage.yml
+vars/wp_config.yml
+*.retry

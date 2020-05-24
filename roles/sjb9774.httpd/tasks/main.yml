@@ -1,0 +1,21 @@
+---
+- name: install httpd
+  package:
+    name: httpd
+    state: present
+  become: yes
+  register: httpd_info
+
+- name: start httpd
+  service:
+    name: httpd
+    state: started
+  become: yes
+  when: 'not httpd_info.changed'
+
+- name: reload httpd
+  service:
+    name: httpd
+    state: reloaded
+  become: yes
+  when: httpd_info.changed

@@ -1,0 +1,2 @@
+- include: db_setup.yml
+- include: wordpress.yml

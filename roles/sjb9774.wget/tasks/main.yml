@@ -1,0 +1,6 @@
+---
+- name: install wget
+  package:
+    name: wget
+    state: present
+  become: yes

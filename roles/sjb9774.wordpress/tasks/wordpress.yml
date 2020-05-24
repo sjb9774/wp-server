@@ -1,0 +1,32 @@
+---
+- name: download wordpress tar
+  shell:
+    cmd: 'wget https://wordpress.org/latest.tar.gz -O /tmp/wp.tar.gz'
+
+- name: extract wordpress
+  unarchive:
+    src: /tmp/wp.tar.gz
+    dest: "/tmp/"
+    remote_src: yes
+  become: yes
+
+- name: move wordpress files to wp root
+  shell:
+    cmd: "cp -r /tmp/wordpress/* {{ wordpress_root }}"
+  become: yes
+
+- name: copy wp-config.php
+  template:
+    dest: "{{ wordpress_root }}/wp-config.php"
+    src: "templates/wp-config.php.j2"
+    owner: "{{ wordpress_user }}"
+    group: "{{ wordpress_group }}"
+  become: yes
+
+- name: change wordpress content owner
+  file:
+    path: "{{ wordpress_root }}"
+    owner: "{{ wordpress_user }}"
+    group: "{{ wordpress_group }}"
+    recurse: yes
+  become: yes

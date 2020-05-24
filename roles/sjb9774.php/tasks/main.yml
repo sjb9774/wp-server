@@ -1,0 +1,48 @@
+---
+- name: check for php installed
+  shell:
+    cmd: "rpm -q php"
+  failed_when: false
+  register: php_info
+
+- name: remove other php version
+  package:
+    name: php
+    state: absent
+  when: '"php-7.3" not in php_info.stdout and "not installed" not in php_info.stdout'
+
+- name: get php 7.3 rpm
+  shell:
+    cmd: "wget http://rpms.remirepo.net/enterprise/remi-release-7.rpm -O /tmp/php73.rpm"
+  when: '"php-7.3" not in php_info.stdout'
+
+# - name: get php 7.3 noarch rpm
+#   shell:
+#     cmd: "wget http://rpms.remirepo.net/enterprise/remi-release-7.noarch.rpm -O /tmp/php73-noarch.rpm"
+#   when: '"php-7.3" not in php_info.stdout'
+
+- name: rpm install php7.3
+  shell:
+    cmd: "rpm -Uvh /tmp/php73.rpm"
+  when: '"php-7.3" not in php_info.stdout'
+  failed_when: false
+  become: yes
+
+- name: enable 73 repo
+  shell:
+    cmd: "yum-config-manager --enable remi-php73"
+  become: yes
+  when: '"php-7.3" not in php_info.stdout'
+
+- name: install php 7.3
+  package:
+    name: php
+    state: present
+  become: yes
+  when: '"php-7.3" not in php_info.stdout'
+
+- name: install php-mysql
+  package:
+    name: php-mysql
+    state: present
+  become: yes

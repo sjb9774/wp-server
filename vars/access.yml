@@ -1,0 +1,9 @@
+---
+user_groups:
+  - 'steve-admin'
+users:
+  - { 'username':'stephen.biston', 'groups': ['steve-admin'] }
+keys:
+  - { 'user': 'stephen.biston', 'public_key_file': 'files/ssh/stephen.biston' }
+sudoer_groups:
+  - 'steve-admin'

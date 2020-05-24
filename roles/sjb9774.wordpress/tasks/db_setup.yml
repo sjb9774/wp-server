@@ -1,0 +1,20 @@
+---
+- name: install python2-PyMySQL
+  package:
+    name: python2-PyMySQL
+    state: present
+  become: yes
+
+- name: create wordpress database
+  mysql_db:
+    name: '{{ wordpress_db_name }}'
+    state: present
+    login_user: root
+
+- name: create wordpress user
+  mysql_user:
+    name: '{{ wordpress_db_username }}'
+    password: '{{ wordpress_db_password }}'
+    priv: '{{ wordpress_db_name }}.*:ALL'
+    state: present
+    login_user: root

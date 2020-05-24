@@ -1,0 +1,39 @@
+---
+- name: check if mysql installed
+  shell:
+    cmd: 'rpm -q mysql-community-release'
+  register: mysql_info
+  failed_when: false
+
+- name: download mysql 5.x rpm
+  shell:
+    cmd: 'wget http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm -O /tmp/mysql.rpm'
+  when: '"not installed" in mysql_info.stdout'
+
+- name: rpm install
+  shell:
+    cmd: 'rpm -ivh /tmp/mysql.rpm'
+  become: yes
+  when: '"not installed" in mysql_info.stdout'
+
+- name: install mysql server
+  package:
+    name: mysql-server
+    state: present
+  become: yes
+  register: mysqld
+  when: '"not installed" in mysql_info.stdout'
+
+- name: install mysql client
+  package:
+    name: mysql
+    state: present
+  become: yes
+  when: '"not installed" in mysql_info.stdout'
+
+- name: restart mysqld
+  service:
+    name: mysqld
+    state: reloaded
+  when: mysqld.changed
+  become: yes

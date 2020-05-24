@@ -1,0 +1,6 @@
+app:
+  hosts:
+    3.16.69.23:
+      bootstrap_user: centos
+      access_user: stephen.biston
+      apache_server_name: stage.stephenbiston.com
