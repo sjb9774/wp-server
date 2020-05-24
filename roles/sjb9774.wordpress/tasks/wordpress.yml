@@ -1,7 +1,13 @@
 ---
+- name: check for existing wordpress installation
+  stat:
+    path: "{{ wordpress_root }}/wp-config.php"
+  register: wp_config
+
 - name: download wordpress tar
   shell:
     cmd: 'wget https://wordpress.org/latest.tar.gz -O /tmp/wp.tar.gz'
+  when: not wp_config.stat.exists
 
 - name: extract wordpress
   unarchive:
@@ -9,11 +15,21 @@
     dest: "/tmp/"
     remote_src: yes
   become: yes
+  when: not wp_config.stat.exists
+
+- name: create wordpress root
+  file:
+    path: "{{ wordpress_root }}"
+    state: directory
+    owner: root
+    group: root
+  become: yes
 
 - name: move wordpress files to wp root
   shell:
     cmd: "cp -r /tmp/wordpress/* {{ wordpress_root }}"
   become: yes
+  when: not wp_config.stat.exists
 
 - name: copy wp-config.php
   template:

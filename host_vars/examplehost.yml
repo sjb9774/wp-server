@@ -1,0 +1,6 @@
+domains:
+  - {'domain': 'www.example.com', 'alias': 'example.com'}
+wordpress_db_name: wp_db
+wordpress_db_password: examplepassword
+wordpress_db_username: wp_user
+wordpress_root: /var/www/www.example.com/

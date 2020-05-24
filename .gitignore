@@ -3,3 +3,7 @@ inventory/prod.yml
 inventory/stage.yml
 vars/wp_config.yml
 *.retry
+host_vars/*
+!host_vars/examplehost.yml
+group_vars/*
+!group_vars/all.example.yml

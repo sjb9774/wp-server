@@ -6,6 +6,55 @@
   become: yes
   register: httpd_info
 
+- name: create sites-* folders
+  file:
+    path: "/etc/httpd/{{ item }}"
+    state: directory
+    owner: root
+    group: root
+  with_items:
+    - "sites-available"
+    - "sites-enabled"
+  become: yes
+
+- name: copy httpd.conf
+  template:
+    src: templates/httpd.conf.j2
+    dest: /etc/httpd/conf/httpd.conf
+    owner: root
+    group: root
+  become: yes
+  register: httpd_template
+
+- name: create log directories
+  file:
+    path: "/var/log/httpd/{{ item.domain }}/logs/"
+    state: directory
+    owner: root
+    group: root
+  with_items: "{{ domains }}"
+  become: yes
+  register: log_dirs
+
+- name: copy domain configurations
+  template:
+    src: templates/site.conf
+    dest: '/etc/httpd/sites-available/{{ item.domain }}.conf'
+    owner: root
+    group: root
+  become: yes
+  with_items: '{{ domains }}'
+  register: domain_templates
+
+- name: enable domains
+  file:
+    src: '/etc/httpd/sites-available/{{ item.domain }}.conf'
+    dest: '/etc/httpd/sites-enabled/{{ item.domain }}.conf'
+    state: link
+  become: yes
+  with_items: '{{ domains }}'
+  register: domains_enabled
+
 - name: start httpd
   service:
     name: httpd
@@ -18,4 +67,4 @@
     name: httpd
     state: reloaded
   become: yes
-  when: httpd_info.changed
+  when: httpd_info.changed or domains_enabled.changed or domain_templates.changed or httpd_template.changed

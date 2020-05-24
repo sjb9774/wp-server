@@ -16,8 +16,6 @@
   name: setup WordPress
   gather_facts: yes
   remote_user: "{{ access_user }}"
-  vars_files:
-    - ./vars/wp_config.yml
   tags:
       - site
   roles:
@@ -25,7 +23,9 @@
       tags:
         - mysql
     - sjb9774.php
-    - sjb9774.httpd
+    - role: sjb9774.httpd
+      tags:
+        - httpd
     - role: sjb9774.wordpress
       tags:
         - wordpress

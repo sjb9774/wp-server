@@ -1,0 +1,4 @@
+bootstrap_user: centos
+access_user: stephen.biston
+wordpress_user: apache
+wordpress_group: apache

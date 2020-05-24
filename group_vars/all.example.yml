@@ -1,0 +1,4 @@
+bootstrap_user: centos
+access_user: my.user
+wordpress_user: apache
+wordpress_group: apache
