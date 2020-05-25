@@ -1,0 +1,72 @@
+---
+- name: check for xdebug install
+  shell:
+    cmd: "php -m"
+  register: php_modules
+
+- name: get xdebug tarball
+  shell:
+    cmd: "wget https://xdebug.org/files/xdebug-2.9.5.tgz -O /tmp/xdebug.tgz"
+  when: '"xdebug" not in php_modules.stdout'
+
+- name: install php-devel
+  package:
+    name: php-devel
+    state: present
+  become: yes
+  when: '"xdebug" not in php_modules.stdout'
+
+- name: unzip xdebug
+  unarchive:
+    src: /tmp/xdebug.tgz
+    dest: /tmp/
+    remote_src: yes
+  become: yes
+  when: '"xdebug" not in php_modules.stdout'
+
+- name: run phpize
+  shell:
+    cmd: "cd /tmp/xdebug-2.9.5 && phpize"
+  when: '"xdebug" not in php_modules.stdout'
+  become: yes
+
+- name: configure xdebug
+  shell:
+    cmd: "cd /tmp/xdebug-2.9.5 && ./configure --enable-xdebug"
+  when: '"xdebug" not in php_modules.stdout'
+  become: yes
+
+- name: make xdebug
+  shell:
+    cmd: "cd /tmp/xdebug-2.9.5 && make"
+  when: '"xdebug" not in php_modules.stdout'
+  become: yes
+
+- name: make install xdebug
+  shell:
+    cmd: "cd /tmp/xdebug-2.9.5 && make install"
+  when: '"xdebug" not in php_modules.stdout'
+  become: yes
+
+- name: move xdebug.so
+  shell:
+    cmd: "cp /tmp/xdebug-2.9.5/modules/xdebug.so /usr/lib64/php/modules/xdebug.so"
+  when: '"xdebug" not in php_modules.stdout'
+  failed_when: false
+  become: yes
+
+- name: add xdebug to php.ini
+  template:
+    src: templates/php.ini.j2
+    dest: /etc/php.ini
+    owner: root
+    group: root
+  become: yes
+  when: '"xdebug" not in php_modules.stdout'
+
+- name: restart httpd
+  service:
+    name: httpd
+    state: reloaded
+  become: yes
+  when: '"xdebug" not in php_modules.stdout'

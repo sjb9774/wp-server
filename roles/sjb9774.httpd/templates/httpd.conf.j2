@@ -347,6 +347,14 @@ AddDefaultCharset UTF-8
 #EnableMMAP off
 EnableSendfile on
 
+<VirtualHost *:80>
+    ServerName default
+    <Location />
+        Order allow,deny
+        Deny from all
+    </Location>
+</VirtualHost>
+
 # Supplemental configuration
 #
 # Load config files in the "/etc/httpd/conf.d" directory, if any.

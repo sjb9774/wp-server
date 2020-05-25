@@ -38,6 +38,7 @@
     owner: "{{ wordpress_user }}"
     group: "{{ wordpress_group }}"
   become: yes
+  register: wp_config_change
 
 - name: change wordpress content owner
   file:
@@ -46,3 +47,10 @@
     group: "{{ wordpress_group }}"
     recurse: yes
   become: yes
+
+- name: reload httpd
+  service:
+    name: httpd
+    state: reloaded
+  become: yes
+  when: wp_config_change.changed or not wp_config.stat.exists

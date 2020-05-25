@@ -7,3 +7,4 @@ host_vars/*
 !host_vars/examplehost.yml
 group_vars/*
 !group_vars/all.example.yml
+.vagrant/

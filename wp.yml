@@ -22,10 +22,22 @@
     - role: sjb9774.mysql
       tags:
         - mysql
-    - sjb9774.php
+    - role: sjb9774.git
+      tags:
+        - git
+    - role: sjb9774.php
+      tags:
+        - php
     - role: sjb9774.httpd
       tags:
         - httpd
+    - role: sjb9774.php-xdebug
+      tags:
+        - php
+        - xdebug
+      vars:
+        xdebug_remote_host: "{{ ansible_hostname }}"
+      when: include_xdebug
     - role: sjb9774.wordpress
       tags:
         - wordpress
