@@ -48,6 +48,11 @@
     recurse: yes
   become: yes
 
+- name: accommodate SELinux
+  shell:
+    cmd: "chcon -R -t httpd_sys_content_t {{ wordpress_root }}"
+  become: yes
+
 - name: reload httpd
   service:
     name: httpd

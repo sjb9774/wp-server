@@ -1,0 +1,5 @@
+---
+- name: install composer
+  shell:
+    cmd: "curl -sS https://getcomposer.org/installer | php > /usr/local/bin/composer"
+  become: yes

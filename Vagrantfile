@@ -1,6 +1,8 @@
+
 Vagrant.configure("2") do |config|
   config.vm.box = "centos/7"
   config.vm.network "private_network", ip: '10.19.90.99'
+  config.vm.synced_folder "/Users/stephen.biston/git/stephenbiston.com", "/srv/website", type: "nfs"
   # simple provision to allow us to ssh as vagrant using of the keys used in the
   # playbook; usually vagrant sets up its own key for the vagrant user but for
   # simplicity (and for the closest functional mirroring of AWS instances) we

@@ -1,0 +1,6 @@
+---
+- name: install svn
+  package:
+    name: svn
+    state: present
+  become: yes

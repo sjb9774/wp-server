@@ -3,3 +3,4 @@ access_user: stephen.biston
 wordpress_user: apache
 wordpress_group: apache
 include_xdebug: False
+fresh_wordpress_install: False

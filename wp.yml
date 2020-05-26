@@ -38,6 +38,8 @@
       vars:
         xdebug_remote_host: "{{ ansible_hostname }}"
       when: include_xdebug
+    - role: sjb9774.composer
+    - role: sjb9774.svn
     - role: sjb9774.wordpress
       tags:
         - wordpress
