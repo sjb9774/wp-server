@@ -6,10 +6,10 @@
   become: yes
   with_items:
     - certbot
-    - python2-certbot-nginx
+    - python2-certbot-apache
 
 - name: generate cert
   shell:
-    cmd: "certbot certonly --nginx -m {{ certbot_email }} --agree-tos --non-interactive -d {{ certbot_domain }}"
+    cmd: "certbot certonly --apache -m {{ certbot_email }} --agree-tos --non-interactive -d {{ certbot_domain }}"
   become: yes
   ignore_errors: true # temporary until DNS sorted out

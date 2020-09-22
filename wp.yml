@@ -43,3 +43,10 @@
     - role: sjb9774.wordpress
       tags:
         - wordpress
+    - role: sjb9774.certbot
+      vars:
+        - certbot_email: stephen.biston@gmail.com
+        - certbot_domain: "{{ ansible_hostname }}"
+      tags:
+        - certbot
+      when: include_certbot|default(False)

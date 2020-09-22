@@ -4,10 +4,16 @@
     path: "{{ wordpress_root }}/wp-config.php"
   register: wp_config
 
+- name: install gd
+  package:
+    name: php-gd
+    state: present
+  become: yes
+
 - name: download wordpress tar
   shell:
     cmd: 'wget https://wordpress.org/latest.tar.gz -O /tmp/wp.tar.gz'
-  when: not wp_config.stat.exists
+  when: fresh_wordpress_install
 
 - name: extract wordpress
   unarchive:
@@ -15,7 +21,7 @@
     dest: "/tmp/"
     remote_src: yes
   become: yes
-  when: not wp_config.stat.exists
+  when: fresh_wordpress_install
 
 - name: create wordpress root
   file:
@@ -24,12 +30,13 @@
     owner: root
     group: root
   become: yes
+  when: fresh_wordpress_install
 
 - name: move wordpress files to wp root
   shell:
     cmd: "cp -r /tmp/wordpress/* {{ wordpress_root }}"
   become: yes
-  when: not wp_config.stat.exists
+  when: fresh_wordpress_install
 
 - name: copy wp-config.php
   template:
@@ -50,8 +57,11 @@
 
 - name: accommodate SELinux
   shell:
-    cmd: "chcon -R -t httpd_sys_content_t {{ wordpress_root }}"
+    cmd: "chcon -R -t {{ item }} {{ wordpress_root }}"
   become: yes
+  with_items:
+    - httpd_sys_rw_content_t
+    - httpd_sys_content_t
 
 - name: reload httpd
   service:
